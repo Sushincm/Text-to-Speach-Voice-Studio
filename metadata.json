@@ -1,0 +1,6 @@
+{
+  "name": "NewsCast AI - Professional News Anchor Voice Studio",
+  "description": "Professional studio-grade AI voice text-to-speech engine for broadcast news anchors featuring granular intonation, pacing, and emotional emphasis controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
