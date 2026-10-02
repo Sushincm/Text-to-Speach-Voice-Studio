@@ -14,13 +14,13 @@ export interface TonePresetConfig {
 export const STUDIO_TONE_CONFIGS: Record<StudioTone, TonePresetConfig> = {
   'zack-d': {
     id: 'zack-d',
-    name: 'Zack D. Films',
+    name: 'Zack D. Films (25-Yr Creator)',
     badge: '🎬 Viral Explainer',
-    description: 'Snappy curiosity hook, punchy explanatory delivery, deep chest resonance (-0.8st), and crisp studio presence',
-    defaultSpeed: 1.22,
-    pitch: -0.8,
+    description: 'Youthful 25-yr male voice (Puck) with snappy curiosity hook, punchy explanatory delivery, and crisp presence',
+    defaultSpeed: 1.20,
+    pitch: 0.0,
     volumeGainDb: 2.0,
-    promptStyle: 'Fast-paced, punchy, high-retention YouTube Shorts explainer voice in the signature Zack D. Films style with crisp diction, gripping curiosity hook, deep chest resonance, dramatic pauses, and engaging pacing',
+    promptStyle: 'Fast-paced, punchy, high-retention 25-year-old YouTube Shorts explainer voice in the signature Zack D. Films style with crisp diction, gripping curiosity hook, dramatic pauses, and engaging pacing',
   },
   'narrative': {
     id: 'narrative',

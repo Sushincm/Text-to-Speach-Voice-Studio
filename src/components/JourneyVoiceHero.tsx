@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code2, Mic, Flame } from 'lucide-react';
+import { Code2, Mic, Flame, Sparkles } from 'lucide-react';
 import { StudioTone } from '../types';
 import { STUDIO_TONE_CONFIGS } from '../utils/audioUtils';
 
@@ -20,7 +20,12 @@ export const JourneyVoiceHero: React.FC<JourneyVoiceHeroProps> = ({
   studioTone,
   autoFit30s = true,
 }) => {
-  const toneConfig = STUDIO_TONE_CONFIGS[studioTone] || STUDIO_TONE_CONFIGS['narrative'];
+  const toneConfig = STUDIO_TONE_CONFIGS[studioTone] || STUDIO_TONE_CONFIGS['zack-d'];
+  const voiceDisplayName = studioTone === 'zack-d' || studioTone === 'viral-shorts'
+    ? 'en-US-Puck (25-Yr Creator)'
+    : studioTone === 'broadcast'
+    ? 'en-US-Fenrir (Broadcast Pro)'
+    : 'en-US-Journey-D (Narrative)';
 
   return (
     <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -29,19 +34,29 @@ export const JourneyVoiceHero: React.FC<JourneyVoiceHeroProps> = ({
         <div className={`w-11 h-11 rounded-xl border flex items-center justify-center shrink-0 ${
           studioTone === 'zack-d'
             ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400'
+            : studioTone === 'viral-shorts'
+            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
             : 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200'
         }`}>
-          {studioTone === 'zack-d' ? <Flame className="w-5 h-5 fill-current" /> : <Mic className="w-5 h-5" />}
+          {studioTone === 'zack-d' ? (
+            <Flame className="w-5 h-5 fill-current" />
+          ) : studioTone === 'viral-shorts' ? (
+            <Sparkles className="w-5 h-5 fill-current" />
+          ) : (
+            <Mic className="w-5 h-5" />
+          )}
         </div>
 
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
-              en-US-Journey-D
+              {voiceDisplayName}
             </h2>
             <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border ${
               studioTone === 'zack-d'
                 ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                : studioTone === 'viral-shorts'
+                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
                 : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
             }`}>
               {toneConfig.name} Tone
