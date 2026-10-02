@@ -81,9 +81,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
   if (!take) {
     return (
-      <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 text-center text-zinc-400 flex flex-col items-center justify-center gap-1.5 shadow-xs">
-        <p className="text-xs font-mono font-medium text-zinc-500">Audio Preview</p>
-        <p className="text-xs text-zinc-400">
+      <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-6 text-center text-zinc-400 dark:text-zinc-500 flex flex-col items-center justify-center gap-1.5 shadow-xs">
+        <p className="text-xs font-mono font-medium text-zinc-500 dark:text-zinc-400">Audio Preview</p>
+        <p className="text-xs text-zinc-400 dark:text-zinc-500">
           Generated story audio will be ready for playback and export here.
         </p>
       </div>
@@ -91,15 +91,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm">
+    <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 space-y-4 shadow-sm">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-3">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
-          <h3 className="text-xs font-semibold text-zinc-900 font-mono truncate max-w-sm">
+          <h3 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono truncate max-w-sm">
             {take.title}
           </h3>
-          <span className="text-[11px] text-zinc-400 font-mono">
+          <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">
             {take.duration ? `(${take.duration.toFixed(1)}s)` : ''}
           </span>
         </div>
@@ -107,16 +107,16 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         <button
           type="button"
           onClick={() => downloadWavFile(take.audioUrl, `newscast-${take.id}.wav`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-200 text-xs font-mono font-medium transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 text-xs font-mono font-medium transition-colors cursor-pointer"
         >
-          <Download className="w-3.5 h-3.5 text-zinc-600" />
+          <Download className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
           <span>Export WAV</span>
         </button>
       </div>
 
       {/* Progress scrubber */}
       <div className="space-y-1.5">
-        <div className="flex justify-between text-[11px] font-mono text-zinc-500">
+        <div className="flex justify-between text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
@@ -127,7 +127,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           step="0.05"
           value={currentTime}
           onChange={handleSeek}
-          className="w-full h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-zinc-900"
+          className="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-zinc-900 dark:accent-zinc-100"
         />
       </div>
 
@@ -137,7 +137,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button
             type="button"
             onClick={onTogglePlay}
-            className="w-9 h-9 rounded-xl bg-zinc-900 hover:bg-black text-white flex items-center justify-center transition-colors cursor-pointer shadow-sm"
+            className="w-9 h-9 rounded-xl bg-zinc-900 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-950 flex items-center justify-center transition-colors cursor-pointer shadow-sm"
           >
             {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
           </button>
@@ -145,21 +145,23 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button
             type="button"
             onClick={onReset}
-            className="w-9 h-9 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 flex items-center justify-center transition-colors cursor-pointer"
+            className="w-9 h-9 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 flex items-center justify-center transition-colors cursor-pointer"
             title="Restart playback"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
 
           {/* Speed Presets */}
-          <div className="flex items-center gap-1 bg-zinc-100 p-0.5 rounded-lg border border-zinc-200 text-[11px] font-mono">
+          <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 p-0.5 rounded-lg border border-zinc-200 dark:border-zinc-700 text-[11px] font-mono">
             {[1, 1.25, 1.5].map((rate) => (
               <button
                 key={rate}
                 type="button"
                 onClick={() => handlePlaybackRateChange(rate)}
                 className={`px-2 py-0.5 rounded ${
-                  playbackRate === rate ? 'bg-white text-zinc-900 font-semibold shadow-xs' : 'text-zinc-500 hover:text-zinc-800'
+                  playbackRate === rate
+                    ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-semibold shadow-xs'
+                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
                 }`}
               >
                 {rate}x
@@ -173,9 +175,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button
             type="button"
             onClick={toggleMute}
-            className="text-zinc-500 hover:text-zinc-800 transition-colors"
+            className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-zinc-400" /> : <Volume2 className="w-4 h-4" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-zinc-400 dark:text-zinc-500" /> : <Volume2 className="w-4 h-4" />}
           </button>
           <input
             type="range"
@@ -184,7 +186,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
             step="0.05"
             value={isMuted ? 0 : volume}
             onChange={handleVolume}
-            className="w-20 h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-zinc-900"
+            className="w-20 h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-zinc-900 dark:accent-zinc-100"
           />
         </div>
       </div>

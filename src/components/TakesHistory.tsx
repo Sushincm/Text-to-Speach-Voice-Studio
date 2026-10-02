@@ -21,18 +21,18 @@ export const TakesHistory: React.FC<TakesHistoryProps> = ({
   if (takes.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 sm:p-5 space-y-3 shadow-sm">
-      <div className="flex items-center justify-between border-b border-zinc-100 pb-2.5">
+    <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-4 sm:p-5 space-y-3 shadow-sm">
+      <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-2.5">
         <div className="flex items-center gap-2">
-          <History className="w-3.5 h-3.5 text-zinc-500" />
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-700 font-mono">
+          <History className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 font-mono">
             Generated Takes ({takes.length})
           </h3>
         </div>
         <button
           type="button"
           onClick={onClearAll}
-          className="text-[11px] text-zinc-400 hover:text-red-600 transition-colors font-mono cursor-pointer"
+          className="text-[11px] text-zinc-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 transition-colors font-mono cursor-pointer"
         >
           Clear History
         </button>
@@ -51,25 +51,29 @@ export const TakesHistory: React.FC<TakesHistoryProps> = ({
               key={take.id}
               className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between gap-2.5 ${
                 isActive
-                  ? 'bg-zinc-50 border-zinc-900 shadow-xs'
-                  : 'bg-white border-zinc-200 hover:border-zinc-300'
+                  ? 'bg-zinc-50 dark:bg-zinc-800/80 border-zinc-900 dark:border-zinc-400 shadow-xs'
+                  : 'bg-white dark:bg-zinc-900/60 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
               }`}
             >
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="font-semibold text-zinc-900 truncate pr-2">
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100 truncate pr-2">
                     {take.title}
                   </span>
-                  <span className="text-zinc-400 shrink-0 text-[10px]">
+                  <span className="text-zinc-400 dark:text-zinc-500 shrink-0 text-[10px]">
                     {take.duration ? `${take.duration.toFixed(1)}s` : ''} • {timeStr}
                   </span>
                 </div>
 
-                <p className="text-xs text-zinc-600 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-2 leading-relaxed">
                   {take.text}
                 </p>
 
-                <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-mono pt-0.5">
+                <div className="flex items-center gap-2 text-[10px] text-zinc-400 dark:text-zinc-500 font-mono pt-0.5">
+                  <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                    {take.studioTone === 'zack-d' ? '🎬 Zack D.' : take.studioTone === 'broadcast' ? '📻 News' : take.studioTone === 'viral-shorts' ? '⚡ Shorts' : '🎙️ Journey-D'}
+                  </span>
+                  <span>•</span>
                   <span>{take.speed.toFixed(2)}x</span>
                   <span>•</span>
                   <span>{take.pitch > 0 ? `+${take.pitch.toFixed(1)}` : take.pitch.toFixed(1)}st</span>
@@ -78,11 +82,11 @@ export const TakesHistory: React.FC<TakesHistoryProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-zinc-100">
+              <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => onSelectTake(take)}
-                  className="flex items-center gap-1.5 text-xs text-zinc-900 hover:text-black font-semibold font-mono transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 text-xs text-zinc-900 dark:text-zinc-100 hover:text-black dark:hover:text-white font-semibold font-mono transition-colors cursor-pointer"
                 >
                   <Play className="w-3 h-3 fill-current" />
                   <span>Load Take</span>
@@ -92,7 +96,7 @@ export const TakesHistory: React.FC<TakesHistoryProps> = ({
                   <button
                     type="button"
                     onClick={() => downloadWavFile(take.audioUrl, `take-${take.id}.wav`)}
-                    className="p-1 text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer"
+                    className="p-1 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                     title="Export WAV"
                   >
                     <Download className="w-3.5 h-3.5" />
@@ -100,7 +104,7 @@ export const TakesHistory: React.FC<TakesHistoryProps> = ({
                   <button
                     type="button"
                     onClick={() => onDeleteTake(take.id)}
-                    className="p-1 text-zinc-400 hover:text-red-600 transition-colors cursor-pointer"
+                    className="p-1 text-zinc-400 hover:text-red-600 dark:text-zinc-500 dark:hover:text-red-400 transition-colors cursor-pointer"
                     title="Delete"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

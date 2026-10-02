@@ -1,10 +1,18 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: #fafafa;
     color: #09090b;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dark body {
+    background-color: #09090b;
+    color: #f4f4f5;
   }
 }
 
@@ -20,7 +28,7 @@
   font-family: 'Cinzel', serif;
 }
 
-/* ElevenLabs style clean light scrollbars */
+/* Clean custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -28,10 +36,19 @@
 ::-webkit-scrollbar-track {
   background: rgba(240, 240, 242, 0.8);
 }
+.dark ::-webkit-scrollbar-track {
+  background: rgba(24, 24, 27, 0.8);
+}
 ::-webkit-scrollbar-thumb {
   background: rgba(200, 200, 208, 0.8);
   border-radius: 9999px;
 }
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(63, 63, 70, 0.8);
+}
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(160, 160, 170, 0.9);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 113, 122, 0.9);
 }

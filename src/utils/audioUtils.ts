@@ -1,3 +1,69 @@
+import { StudioTone } from '../types';
+
+export interface TonePresetConfig {
+  id: StudioTone;
+  name: string;
+  badge: string;
+  description: string;
+  defaultSpeed: number;
+  pitch: number;
+  volumeGainDb: number;
+  promptStyle: string;
+}
+
+export const STUDIO_TONE_CONFIGS: Record<StudioTone, TonePresetConfig> = {
+  'zack-d': {
+    id: 'zack-d',
+    name: 'Zack D. Films',
+    badge: '🎬 Viral Explainer',
+    description: 'Snappy curiosity hook, punchy explanatory delivery, deep chest resonance (-0.8st), and crisp studio presence',
+    defaultSpeed: 1.22,
+    pitch: -0.8,
+    volumeGainDb: 2.0,
+    promptStyle: 'Fast-paced, punchy, high-retention YouTube Shorts explainer voice in the signature Zack D. Films style with crisp diction, gripping curiosity hook, deep chest resonance, dramatic pauses, and engaging pacing',
+  },
+  'narrative': {
+    id: 'narrative',
+    name: 'Journey-D Classic',
+    badge: '🎙️ Narrative',
+    description: 'Smooth, natural documentary baritone with warm vocal harmonics and relaxed cadence',
+    defaultSpeed: 1.00,
+    pitch: 0.0,
+    volumeGainDb: 1.0,
+    promptStyle: 'Captivating male documentary storyteller with rich chest resonance, compelling narrative pacing, and warm engaging presence',
+  },
+  'viral-shorts': {
+    id: 'viral-shorts',
+    name: 'Viral Shorts Pacing',
+    badge: '⚡ ≤30s High Energy',
+    description: 'High energy, fast-paced retention flow designed to fit long scripts cleanly under 30 seconds',
+    defaultSpeed: 1.35,
+    pitch: 0.0,
+    volumeGainDb: 2.0,
+    promptStyle: 'Energetic, fast, engaging viral TikTok/Reels narration with crisp pacing and continuous forward momentum',
+  },
+  'broadcast': {
+    id: 'broadcast',
+    name: 'Broadcast Anchor',
+    badge: '📻 News Desk',
+    description: 'Authoritative, clear broadcast cadence with studio proximity effect and balanced neutral inflection',
+    defaultSpeed: 1.10,
+    pitch: -0.3,
+    volumeGainDb: 1.5,
+    promptStyle: 'Professional broadcast news anchor delivering authoritative, articulate, and clear breaking news narration',
+  },
+  'custom': {
+    id: 'custom',
+    name: 'Custom Calibration',
+    badge: '🎛️ Manual DSP',
+    description: 'Fully customized manual slider calibrations for rate, pitch, and acoustic gain',
+    defaultSpeed: 1.00,
+    pitch: 0.0,
+    volumeGainDb: 1.0,
+    promptStyle: 'Professional studio voice artist with clean articulation',
+  },
+};
+
 /**
  * Calculates estimated story duration based on word count, punctuation pauses, and speed multiplier.
  * Standard storytelling read speed is approx 135 words per minute (2.25 words/sec).
@@ -29,17 +95,18 @@ export function estimateStoryTiming(text: string, speedMultiplier = 1.0) {
 
 /**
  * Auto-controls speed, pitch, and volume based on word count to fit within a 30s maximum duration.
- * Keeps pitch at 0.0 (natural human Journey-D sound) so the vocal tone is never altered or distorted.
+ * Accurately calculates the exact speaking rate needed to finish in ~27.5-28.5 seconds.
  */
-export function calculateAuto30sCalibration(text: string) {
+export function calculateAuto30sCalibration(text: string, tone: StudioTone = 'narrative') {
   const clean = text.replace(/\[.*?\]/g, '').trim();
   const words = clean ? clean.split(/\s+/).filter(Boolean).length : 0;
+  const toneConfig = STUDIO_TONE_CONFIGS[tone] || STUDIO_TONE_CONFIGS['narrative'];
 
   if (words === 0) {
     return {
-      speed: 1.0,
-      pitch: 0.0,
-      volumeGainDb: 0.0,
+      speed: toneConfig.defaultSpeed,
+      pitch: toneConfig.pitch,
+      volumeGainDb: toneConfig.volumeGainDb,
       words: 0,
       estimatedSecs: 0,
       rawDuration1x: 0,
@@ -52,48 +119,50 @@ export function calculateAuto30sCalibration(text: string) {
   const majorPauses = (clean.match(/[.!?]/g) || []).length;
   const minorPauses = (clean.match(/[,;:]/g) || []).length;
 
-  // Natural human storytelling pace for Journey-D (~135 words/min = 2.25 words/sec)
+  // Natural human storytelling pace (~135 words/min = 2.25 words/sec)
   const speakingTime = words / 2.25;
   const pauseTime = (majorPauses * 0.35) + (minorPauses * 0.15);
   const rawDuration1x = Number((speakingTime + pauseTime).toFixed(1));
 
-  // Max duration is 30.0 seconds. Target ~28.0 seconds for safety margin.
+  // Max duration is 30.0 seconds. Safe target is 28.0 seconds so audio never cuts off.
   const TARGET_SECONDS = 28.0;
 
-  let speed = 1.0;
+  let speed = toneConfig.defaultSpeed;
   let status: 'relaxed' | 'optimal' | 'fast' | 'exceeds' = 'relaxed';
   let recommendation = '';
 
-  if (rawDuration1x <= TARGET_SECONDS) {
-    // Fits comfortably in 30s at natural human speed (1.0x)
-    speed = 1.0;
+  const durationAtDefaultToneSpeed = rawDuration1x / toneConfig.defaultSpeed;
+
+  if (durationAtDefaultToneSpeed <= TARGET_SECONDS) {
+    speed = toneConfig.defaultSpeed;
     status = 'relaxed';
-    recommendation = `Fits comfortably in 30s (${rawDuration1x}s at natural 1.0x human pacing).`;
+    recommendation = `Fits comfortably under 30s (${durationAtDefaultToneSpeed.toFixed(1)}s at ${speed}x ${toneConfig.name} pacing).`;
   } else {
-    // Speed up just enough to fit within 28.0s
+    // Calculate required speed to compress into 28.0 seconds
     const neededSpeed = rawDuration1x / TARGET_SECONDS;
     if (neededSpeed <= 1.45) {
       speed = Number(neededSpeed.toFixed(2));
       status = 'optimal';
-      recommendation = `Auto-fit to ${speed}x speed to fit within 30s (~${TARGET_SECONDS}s).`;
+      recommendation = `Auto-calibrated to ${speed}x speed to fit ${words} words within 30s target (~28.0s).`;
     } else if (neededSpeed <= 1.85) {
       speed = Number(neededSpeed.toFixed(2));
       status = 'fast';
-      recommendation = `Fast narrative pacing (${speed}x) auto-applied to fit ${words} words into 30s.`;
+      recommendation = `Snappy ${speed}x pacing auto-applied to fit longer ${words}-word script into 30s.`;
     } else {
-      speed = 1.85; // Cap at 1.85x so human voice clarity is preserved
+      speed = 1.85; // Preserves human voice clarity
       status = 'exceeds';
-      recommendation = `Story is long (${words} words, ~${rawDuration1x}s). Capped at 1.85x; consider trimming slightly to stay under 30s.`;
+      recommendation = `Script is long (${words} words, ~${rawDuration1x}s at 1x). Auto-fit applied 1.85x speed limit (~${(rawDuration1x/1.85).toFixed(1)}s).`;
     }
   }
 
-  const estimatedSecs = Number((rawDuration1x / speed).toFixed(1));
+  const finalSpeed = Math.max(0.75, Math.min(2.0, Number(speed.toFixed(2))));
+  const estimatedSecs = Number((rawDuration1x / finalSpeed).toFixed(1));
   const fitsIn30s = estimatedSecs <= 30.0;
 
   return {
-    speed: Math.max(0.75, Math.min(2.0, speed)),
-    pitch: 0.0, // Authentic natural Journey-D tone (0.0 st) - tone and sound remain untouched
-    volumeGainDb: 1.0, // Clear broadcast level (+1.0 dB)
+    speed: finalSpeed,
+    pitch: toneConfig.pitch,
+    volumeGainDb: toneConfig.volumeGainDb,
     words,
     estimatedSecs,
     rawDuration1x,
@@ -106,7 +175,7 @@ export function calculateAuto30sCalibration(text: string) {
 /**
  * Triggers clean download of the generated audio WAV file
  */
-export function downloadWavFile(audioUrl: string, filename = 'journey-d-story.wav') {
+export function downloadWavFile(audioUrl: string, filename = 'newscast-story.wav') {
   const link = document.createElement('a');
   link.href = audioUrl;
   link.download = filename;

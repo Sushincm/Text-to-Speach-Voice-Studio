@@ -1,3 +1,5 @@
+export type StudioTone = 'zack-d' | 'narrative' | 'viral-shorts' | 'broadcast' | 'custom';
+
 export interface StoryPreset {
   id: string;
   title: string;
@@ -6,6 +8,7 @@ export interface StoryPreset {
   suggestedSpeed?: number;
   suggestedPitch?: number;
   suggestedVolumeGainDb?: number;
+  suggestedTone?: StudioTone;
 }
 
 export interface AudioTake {
@@ -18,4 +21,5 @@ export interface AudioTake {
   speed: number;
   pitch: number;
   volumeGainDb: number;
+  studioTone?: StudioTone;
 }
